@@ -1,46 +1,41 @@
-const ytdl = require('ytdl-core');
-const fs = require('fs');
-const ffmpeg = require('fluent-ffmpeg');
+const fetch = require('node-fetch');
 
-const handler = async (m, { conn, text, command, usedPrefix }) => {
-  conn.ytmp3 = conn.ytmp3 || {};
-  if (m.sender in conn.ytmp3) {
-    return;
-  }
-  if (!text) throw `*Example:* ${usedPrefix + command} https://www.youtube.com/watch?v=Z28dtg_QmFw`
-  conn.reply(m.chat, wait, m);
-  conn.ytmp3[m.sender] = true;
+let handler = async (m, {conn, text, usedPrefix}) => {
+  if (!text) throw 'Berikan URL dari YouTube!'
   try {
-    let audio = ytdl(text, { quality: 'highestaudio' });
-    let inputFilePath = './tmp/music.webm';
-    let outputFilePath = './tmp/music.mp3';
-    audio.pipe(fs.createWriteStream(inputFilePath)).on('finish', async () => {
-      ffmpeg(inputFilePath)
-        .toFormat('mp3')
-        .on('end', async () => {
-          let buffer = fs.readFileSync(outputFilePath);
-          conn.sendMessage(m.chat, { audio: buffer, mimetype: 'audio/mpeg' }, { quoted: m });
-          delete conn.ytmp3[m.sender];
-          fs.unlinkSync(inputFilePath);
-          fs.unlinkSync(outputFilePath);
-        })
-        .on('error', (err) => {
-          console.log(err);
-          m.reply(`*Convert Error:* ${err.message}`);
-          fs.unlinkSync(inputFilePath);
-          fs.unlinkSync(outputFilePath);
-        })
-        .save(outputFilePath);
-    });
+    const apiUrl = `https://youtube-mp3-downloader2.p.rapidapi.com/ytmp3/ytmp3/?url=${encodeURIComponent(text)}`;
+    const options = {
+      method: 'GET',
+      headers: {
+        'X-RapidAPI-Key': 'eec836627dmsh1f5ef7f852cc725p17953djsnae472d927df7',
+        'X-RapidAPI-Host': 'youtube-mp3-downloader2.p.rapidapi.com'
+      }
+    };
+
+    const response = await fetch(apiUrl, options);
+    
+    if (!response.ok) {
+      throw new Error(`Terjadi kesalahan saat mengambil data dari API: ${response.status} ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    
+    if (!data || !data.link) {
+      throw new Error('URL audio tidak ditemukan dalam respons API');
+    }
+
+    const audioUrl = data.link;
+
+    // Kirim audio ke pengguna
+    await conn.sendMessage(m.chat, { audio: { url: audioUrl }, mimetype: 'audio/mpeg' }, { quoted: m });  
   } catch (e) {
-    console.log(e);
-    m.reply(`*Error:* ${e.message}`);
+    console.error('Kesalahan:', e);
+    throw 'Terjadi kesalahan dalam mengunduh video/audio: ' + e; // Menambahkan pesan kesalahan detail
   }
-};
-
-handler.command = handler.help = ['ytmp3','yta'];
+}
+handler.command = handler.help = ['ytmp3'];
 handler.tags = ['downloader'];
-handler.premium = false;
+handler.exp = 0;
 handler.limit = false;
-
+handler.premium = false;
 module.exports = handler;
