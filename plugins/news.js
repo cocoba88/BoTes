@@ -2,20 +2,34 @@ const fetch = require('node-fetch');
 
 let handler = async (m, { conn }) => {
   try {
-    let res = await fetch('https://aemt.me/cnn');
-    let data = await res.json();
-    
+    let newsSources = [
+      'https://aemt.me/cnn',
+      'https://aemt.me/liputan6',
+      'https://aemt.me/kompas',
+      'https://aemt.me/cnbindonesia'
+    ];
+
+    let promises = newsSources.map(async (source) => {
+      let res = await fetch(source);
+      return res.json();
+    });
+
+    let responses = await Promise.all(promises);
+
     let replyText = "Berikut adalah 10 berita terbaru:\n\n";
-    
-    // Assuming the response structure is consistent
-    for (let i = 0; i < 10 && i < data.result.length; i++) {
-      let article = data.result[i];
-      let { link, thumb, judul } = article;
-      
-      // Constructing the reply text with article titles and links
-      replyText += `${i + 1}. Judul: ${judul}\nLink: ${link}\n\n`;
-    }
-    
+
+    responses.forEach((data, index) => {
+      if (data.result) {
+        for (let i = 0; i < 10 && i < data.result.length; i++) {
+          let article = data.result[i];
+          let { link, thumb, judul } = article;
+
+          // Constructing the reply text with article titles and links
+          replyText += `${index + 1}.${i + 1}.  ${judul}\nLink: ${link}\n\n`;
+        }
+      }
+    });
+
     // Sending the reply to the chat
     conn.reply(m.chat, replyText, m);
   } catch (error) {
@@ -25,9 +39,9 @@ let handler = async (m, { conn }) => {
   }
 };
 
-handler.help = ['news']; // You might want to update the help text accordingly
-handler.tags = ['info']; // You might want to update the tags accordingly
-handler.command = /^(news)$/i; // You might want to update the command regex accordingly
+handler.help = ['news']; // Anda mungkin ingin memperbarui teks bantuan sesuai
+handler.tags = ['info']; // Anda mungkin ingin memperbarui tag sesuai
+handler.command = /^(news)$/i; // Anda mungkin ingin memperbarui regex perintah sesuai
 handler.limit = false;
 handler.admin = false;
 handler.fail = null;

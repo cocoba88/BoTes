@@ -13,7 +13,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
 
             for (let i = 0; i < Math.min(limitnya, res.result.length); i++) {
                 await sleep(3000);
-                conn.sendFile(m.chat, res.result[i].url, null, `*Instagram Downloader*`, m);
+                conn.sendFile(m.chat, res.result[i].url, null, null, m); // Mengubah parameter judul file (caption) menjadi null
             }
         } else {
             throw `Tidak dapat mengunduh media dari Instagram`;
@@ -27,7 +27,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
 handler.help = ['instagram'].map(v => v + ' <url>');
 handler.tags = ['downloader'];
 handler.command = /^(ig|instagram|igdl|instagramdl|igstroy)$/i;
-handler.limit = true;
+handler.limit = false;
 
 module.exports = handler;
 

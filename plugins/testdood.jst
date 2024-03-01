@@ -1,0 +1,74 @@
+const fetch = require('node-fetch');
+
+async function downloadVideo(url) {
+    try {
+        // Kirim permintaan GET ke 9xbuddy.in
+        const response = await fetch(`https://9xbuddy.in/process?url=${encodeURIComponent(url)}`, {
+            method: 'GET',
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0'
+            }
+        });
+
+        const html = await response.text();
+
+        // Log HTML content untuk debug
+        console.log("HTML content:", html);
+
+        // Ekstrak tautan unduhan dari HTML
+        const downloadLink = extractDownloadLink(html);
+
+        // Jika tautan unduhan berhasil diekstrak, kirim pesan dengan tautan tersebut
+        if (downloadLink) {
+            console.log("Extracted download link:", downloadLink);
+            return downloadLink;
+        } else {
+            // Jika tautan unduhan tidak ditemukan, lempar error
+            throw new Error("Tidak dapat menemukan link download atau situs tidak didukung.");
+        }
+    } catch (error) {
+        // Tangani kesalahan yang terjadi selama proses
+        console.error("Error:", error.message);
+        return null;
+    }
+}
+
+function extractDownloadLink(html) {
+    // Logika ekstraksi tautan unduhan dari HTML akan ditempatkan di sini
+    // Anda perlu menganalisis HTML dan menemukan cara untuk mengekstrak tautan unduhan
+    // Ini dapat dilakukan dengan menggunakan parser HTML atau ekspresi reguler, tergantung pada struktur HTML halaman 9xbuddy.in saat ini
+    // Misalnya:
+    // const downloadLink = ...; // Logika ekstraksi tautan unduhan
+    // return downloadLink;
+
+    // Contoh sederhana untuk tujuan demonstrasi
+    const match = html.match(/href="(https:\/\/.*?\.(?:mp4|mkv))"/);
+    if (match) {
+        return match[1];
+    } else {
+        return null;
+    }
+}
+
+// Handler properties
+const handler = {};
+handler.command = handler.help = ['dood'];
+handler.tags = ['downloader'];
+handler.limit = false;
+
+// Export handler
+module.exports = handler;
+
+// Contoh penggunaan
+const videoUrl = "https://doods.pro/e/log7klh74php"; // Ganti dengan URL video yang ingin Anda unduh
+downloadVideo(videoUrl)
+    .then(downloadLink => {
+        if (downloadLink) {
+            console.log("Video berhasil diunduh. Link:", downloadLink);
+        } else {
+            console.log("Gagal mengunduh video.");
+        }
+    })
+    .catch(error => {
+        console.error("Terjadi kesalahan:", error.message);
+    });
