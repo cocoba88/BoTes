@@ -1,27 +1,41 @@
 const fetch = require('node-fetch');
+
 let handler = async (m, { conn, args, usedPrefix, command }) => {  
     if (!args[0]) throw `Gunakan contoh ${usedPrefix}${command} https://fb.watch/mcx9K6cb6t/?mibextid=8103lRmnirLUhozF`;
     try {
-        const res = await fetch(`https://aemt.me/download/fbdl?url=${encodeURIComponent(args[0])}`);
-        const json = await res.json();
-        if (!json.status) {
-            throw json.error || 'Gagal mengambil URL video dari tautan yang diberikan';
+        const url = `https://fb-video-reels.p.rapidapi.com/smvd/get/all?url=${encodeURIComponent(args[0])}&filename=MaganG`;
+        const options = {
+            method: 'GET',
+            headers: {
+                'X-RapidAPI-Key': 'eec836627dmsh1f5ef7f852cc725p17953djsnae472d927df7',
+                'X-RapidAPI-Host': 'fb-video-reels.p.rapidapi.com'
+            }
+        };
+
+        const response = await fetch(url, options);
+        const json = await response.json();
+
+        if (!json.success) {
+            throw json.message || 'Gagal mengambil URL video dari tautan yang diberikan';
         }
-        const { Normal_video, HD, audio } = json.result;
-        if (Normal_video) {
-            conn.sendFile(m.chat, Normal_video, 'fb.mp4', `*Facebook Downloader*`, m);
-        } else if (HD) {
-            conn.sendFile(m.chat, HD, 'fb_hd.mp4', `*Facebook Downloader (HD)*`, m);
-        } else if (audio) {
-            conn.sendFile(m.chat, audio, 'fb_audio.mp4', `*Facebook Downloader (Audio)*`, m);
-        } else {
+
+        const { links } = json;
+        if (!Array.isArray(links) || links.length === 0) {
             throw 'Tidak dapat menemukan URL video yang sesuai dari tautan yang diberikan';
         }
+
+        // Mengambil URL kualitas HD jika tersedia
+        const hdLink = links.find(link => link.quality === 'sd');
+        const videoLink = hdLink ? hdLink.link : links[0].link;
+
+        // Mengirimkan video ke pengguna
+        await conn.sendFile(m.chat, videoLink, 'MaganG.mp4', '', m);
     } catch (error) {
-        console.log(error);
+        console.error(error);
         throw 'Terjadi kesalahan saat melakukan proses download';
     }
 }
+
 handler.help = ['facebook'].map(v => v + ' <url>');
 handler.command = /^(fb|facebook|facebookdl|fbdl|fbdown|dlfb)$/i;
 handler.tags = ['downloader'];
@@ -33,4 +47,5 @@ handler.admin = false;
 handler.botAdmin = false;
 handler.fail = null;
 handler.private = false;
+
 module.exports = handler;
