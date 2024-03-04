@@ -25,11 +25,17 @@ let handler = async (m, {
         const response = await fetch(url, options);
         const result = await response.json();
         if (result.error) throw "Terjadi kesalahan saat memproses URL";
-        for (let media of result.medias) {
-            conn.sendFile(m.chat, media.url, null, '', m); // Mengirim file tanpa pesan tambahan
+        if (result.medias && result.medias.length > 0) {
+            for (let media of result.medias) {
+                if (media.type === 'video' || media.type === 'audio') {
+                    conn.sendFile(m.chat, media.url, null, '', m); // Mengirim file tanpa pesan tambahan
+                }
+            }
+        } else {
+            throw "Tidak ada media yang dapat diunduh dari URL ini";
         }
     } catch (error) {
-        throw `Server Down!`;
+        throw `Terjadi kesalahan saat mengunduh media: ${error}`;
     }
 };
 
