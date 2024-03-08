@@ -44,7 +44,7 @@ Original base [`Link`](https://github.com/HelgaIlham/ZukaBet)
 
 ## Run On Heroku
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/BOTCAHX/RTXZY-MD)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/cocoba88/BoTes)
 # Heroku Buildpack
 ### Instal Buildpack
 ```bash
@@ -61,8 +61,8 @@ Original base [`Link`](https://github.com/HelgaIlham/ZukaBet)
 * Unduh & Instal ImageMagick [`Klik Disini`](https://imagemagick.org/script/download.php)
 
 ```javascript
-git clone https://github.com/BOTCAHX/RTXZY-MD
-cd RTXZY-MD
+git clone https://github.com/cocoba88/BoTes
+cd BoTes
 npm i
 npm start
 ```
