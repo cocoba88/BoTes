@@ -1,4 +1,5 @@
 ## New Update
+BOT WHATSAPP GRATIS cuma memakai fitur seadanya
 
 **Pembaruan :**
 - Fix upload file ke server cdn 
