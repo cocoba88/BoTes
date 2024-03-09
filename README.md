@@ -4,7 +4,7 @@
 - Instagram
 - Pinterest
 - Spotify
-- Terabox
+- Terabox _video_ (Support Folder)
 - Tiktok
 - Twitter
 - Youtube to MP3
