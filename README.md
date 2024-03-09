@@ -1,7 +1,7 @@
 ## New Update
 **BOT WHATSAPP Downloader :**
-- Facebookk
-- instagram
+- Facebook
+- Instagram
 - Pinterest
 - Spotify
 - Terabox
