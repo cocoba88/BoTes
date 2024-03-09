@@ -1,14 +1,15 @@
 ## New Update
 **BOT WHATSAPP Downloader :**
-Facebook
-instagram
-Pinterest
-Spotify
-Terabox
-Tiktok
-Twitter
-Youtube to MP3
-Youtube to MP4
+- Facebook
+- instagram
+- Pinterest
+- Spotify
+- Terabox
+- Tiktok
+- Twitter
+- Youtube to MP3
+- Youtube to MP4
+
 
 
 **Pembaruan :**
