@@ -1,5 +1,15 @@
 ## New Update
-BOT WHATSAPP GRATIS cuma memakai fitur seadanya
+**BOT WHATSAPP Downloader :**
+Facebook
+instagram
+Pinterest
+Spotify
+Terabox
+Tiktok
+Twitter
+Youtube to MP3
+Youtube to MP4
+
 
 **Pembaruan :**
 - Fix upload file ke server cdn 
